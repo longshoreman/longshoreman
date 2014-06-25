@@ -1,3 +1,5 @@
+![Longshoreman](http://i.imgur.com/mASib00.png)
+
 # Longshoreman
 
 Longshoreman automates application deployment using Docker. Create a Docker repository (or use a service), configure the cluster using AWS or Digital Ocean (or whatever you like) and deploy applications using a Heroku-like CLI tool. We're currently using it in production at Wayfinder.
