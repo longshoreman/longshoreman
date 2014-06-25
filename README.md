@@ -1,4 +1,4 @@
-![Longshoreman](http://i.imgur.com/mASib00.png)
+![Longshoreman](http://i.imgur.com/uMtwm4v.png)
 
 # Longshoreman
 
