@@ -14,7 +14,7 @@ Longshoremen has 3 core components: a Controller, one or more Routers and the CL
 
 ### Controller
 
-The Longshoreman controller is a service which orchestrates the deployment of Docker applications across a service cluster and controls how traffic (web or what have you) is routed to individual application instances. It communicates over HTTP with the CLI tool. Launching a new version of an application is as simple as `lsm --app my.app.com deploy docker.repo.com/image:tag`. Your application will be deployed to 2 or more nodes (depending on the size of your cluster and it's available resources). Versioning and rollbacks can be achieved using image tags.
+The Longshoreman controller is a service which orchestrates the deployment of Docker applications across a service cluster and controls how traffic (web or what have you) is routed to individual application instances. It communicates over HTTP with the CLI tool. Launching a new version of an application is as simple as `longshoreman --app my.app.com deploy docker.repo.com/image:tag`. Your application will be deployed to 2 or more nodes (depending on the size of your cluster and it's available resources). Versioning and rollbacks can be achieved using image tags.
 
 [Controller Repository](https://github.com/longshoreman/controller)
 
@@ -34,7 +34,7 @@ The command line tool is an interface to the Longshoreman controller service. It
 
 #### Registry
 
-Longshoreman uses a Docker registry (most likely private) to coordinate application versioning and deployment. Docker registries are outside of the scope of this project, so if you're unfamiliar with theme please [read more here](https://github.com/dotcloud/docker-registry). You will need a Docker registry (most likely a private one) to use Longshoreman. There are 
+Longshoreman uses a Docker registry (most likely private) to coordinate application versioning and deployment. Docker registries are outside of the scope of this project, so if you're unfamiliar with theme please [read more here](https://github.com/dotcloud/docker-registry). You will need a Docker registry (most likely a private one) to use Longshoreman. There are
 
 #### Configuration Store
 
@@ -44,7 +44,7 @@ We are currently using Redis to store and distribute cluster state. Longshoreman
 
 This guide will walk you through creating a Longshoreman powered cluster (we're using EC2 running Ubuntu in this example).
 
-To create an application cluster using Longshoreman, you'll need at least 2 server nodes. However we recommend using 5 for enhanced robustness. Here's how they're broken down: 1 router, 1 controller, 2 application nodes and a Redis box (using a Redis hosting provider will work well too). In the 2 node set up the router, controller and Redis db can live on a single server (but that's not recommended). Actually, the whole thing can run on a single server if you're just playing with the platform, but I digress. 
+To create an application cluster using Longshoreman, you'll need at least 2 server nodes. However we recommend using 5 for enhanced robustness. Here's how they're broken down: 1 router, 1 controller, 2 application nodes and a Redis box (using a Redis hosting provider will work well too). In the 2 node set up the router, controller and Redis db can live on a single server (but that's not recommended). Actually, the whole thing can run on a single server if you're just playing with the platform, but I digress.
 
 ### 1. Launch a controller
 
@@ -70,11 +70,11 @@ To create an application cluster using Longshoreman, you'll need at least 2 serv
 
 ### 4. Configure and deploy applications using the CLI
 
-1. Run `lsm init` to configure your credentials. Enter the Longshoreman controller domain and your token.
-1. `lsm hosts:add <container-node-ip>` to make Longshoreman aware of your nodes.
-1. `lsm apps:add my.app.domain` to add a new service or application to your cluster.
-1. `lsm --app my.app.domain envs:set FOO=bar` to configure your application's runtime settings.
-1. `lsm --app my.app.domain deploy my.docker.reg/repo:tag` to deploy the first version of your application.
+1. Run `longshoreman init` to configure your credentials. Enter the Longshoreman controller domain and your token.
+1. `longshoreman hosts:add <container-node-ip>` to make Longshoreman aware of your nodes.
+1. `longshoreman apps:add my.app.domain` to add a new service or application to your cluster.
+1. `longshoreman --app my.app.domain envs:set FOO=bar` to configure your application's runtime settings.
+1. `longshoreman --app my.app.domain deploy my.docker.reg/repo:tag` to deploy the first version of your application.
 1. Point your domain to your load balancer's CNAME and Bob's your uncle.
 
 Check out [the CLI repository](https://github.com/longshoreman/cli) for full documentation.
