@@ -11,6 +11,8 @@ for each deploy.
 
 ## How does it work?
 
+![Diagram](http://i.imgur.com/I0POpX4.png)
+
 Longshoremen has 3 core components: a Controller, one or more Routers and the CLI. It also uses a Docker registry and Redis as it's configuration database.
 
 ### Controller
