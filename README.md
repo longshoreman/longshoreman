@@ -11,8 +11,6 @@ for each deploy.
 
 ## How does it work?
 
-![Diagram](http://i.imgur.com/I0POpX4.png)
-
 Longshoremen has 3 core components: a Controller, one or more Routers and the CLI. It also uses a Docker registry and Redis as it's configuration database.
 
 ### Controller
@@ -49,6 +47,8 @@ We are currently using Redis to store and distribute the cluster's state. Longsh
 This guide will walk you through creating a Longshoreman powered cluster (we're using EC2 running Ubuntu in this example).
 
 To create an application cluster using Longshoreman, you'll need at least 2 server nodes. However we recommend using 5 for enhanced robustness. Here's how they're broken down: 1 router, 1 controller, 2 application nodes and a Redis box (using a Redis hosting provider will work well too). In the 2 node set up the router, controller and Redis db can live on a single server (but that's not recommended). Actually, the whole thing can run on a single server if you're just taking a test drive, but I digress.
+
+![Diagram](http://i.imgur.com/I0POpX4.png)
 
 ### 1. Launch a controller
 
