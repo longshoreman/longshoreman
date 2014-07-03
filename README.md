@@ -4,7 +4,7 @@
 
 Longshoreman automates application deployment using Docker. Just create a Docker repository (or use a service), configure the cluster using AWS or Digital Ocean (or whatever you like) and deploy applications using a Heroku-like CLI tool. We're currently using it in production at [Wayfinder](http://wayfinder.co) to orchestrate the deployment of microservices.
 
-[Main project page](https://github.com/longshoreman)
+[Main GitHub project page](https://github.com/longshoreman)
 
 ## Why make this?
 
