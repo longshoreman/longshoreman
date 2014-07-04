@@ -2,13 +2,17 @@
 
 # Longshoreman
 
-Longshoreman automates application deployment using Docker. Just create a Docker repository (or use a service), configure the cluster using AWS or Digital Ocean (or whatever you like) and deploy applications using a Heroku-like CLI tool. We're currently using it in production at [Wayfinder](http://wayfinder.co) to orchestrate the deployment of microservices.
+Longshoreman automates application deployment using Docker. Just create a Docker repository (or use a service), configure the cluster using AWS or Digital Ocean (or whatever you like) and deploy applications using a Heroku-like CLI tool.
 
 [Main GitHub project page](https://github.com/longshoreman)
 
 ## Why make this?
 
 We created Longshoreman because we love using Docker but were frustrated with the lack of production-ready deployment options that were available at the time. We looked closely at Deis, Flynn, Dokku and others, but they either did not meet our requirements or were explicitly marked as not ready for production. We were extremely impressed by Deis in particular and it's use of bleeding edge technologies like CoreOS, etcd and systemd. The biggest shortcoming we found with Deis is that it rebuilds Dockerfiles from scratch for each deploy (as far as I know).
+
+## Who made it?
+
+Longshoreman is sponsored/developed by [Wayfinder](http://wayfinder.co). We're currently using it in production to orchestrate the deployment of microservices (which it suits very nicely).
 
 ## How does it work?
 
