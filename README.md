@@ -18,19 +18,19 @@ Longshoreman is sponsored/developed by [Wayfinder](http://wayfinder.co). We're c
 
 Longshoremen has 3 core components: a Controller, one or more Routers and the CLI. It also uses a Docker registry and Redis as it's configuration database.
 
-## Controller
+### Controller
 
 The Longshoreman controller is a service which orchestrates the deployment of Docker applications across a cluster and controls how traffic (web or what have you) is routed to individual application instances. It communicates over HTTP with the CLI tool. Launching a new version of an application is as simple as `longshoreman --app my.app.com deploy docker.repo.com/image:tag`. Your application will be deployed to 2 or more nodes (depending on the size of your cluster and it's available resources). Versioning and rollbacks can be achieved using image tags.
 
 [Controller Repository](https://github.com/longshoreman/controller)
 
-## Routers
+### Routers
 
 Routers dynamically direct incoming web traffic to the correct application instances. They are simple Node.js reverse proxies that pass requests on to the underlying application instances. Multiple routers can be utilized to distribute traffic and eliminate single points of failure.
 
 [Router Repository](https://github.com/longshoreman/router)
 
-## CLI
+### CLI
 
 The command line tool is an interface to the Longshoreman controller service. It allows users to describe the state of the application cluster, deploy new instances of applications (with zero-downtime), add and remove hosts, add and remove application environmental variables and more. See the link below for full documentation.
 
