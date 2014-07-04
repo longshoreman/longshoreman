@@ -8,7 +8,7 @@ Longshoreman automates application deployment using Docker. Just create a Docker
 
 ## Why make this?
 
-We created Longshoreman because we love using Docker but were frustrated with the lack of production-ready deployment options that were available at the time. We looked closely at Deis, Flynn, Dokku and others, but they either did not meet our requirements or were explicitly marked as not ready for production. We were extremely impressed by Deis in particular and it's use of bleeding edge technologies like CoreOS, etcd and systemd. The biggest shortcoming we found with Deis is that it rebuilds Dockerfiles from scratch for each deploy (afaik).
+We created Longshoreman because we love using Docker but were frustrated with the lack of production-ready deployment options that were available at the time. We looked closely at Deis, Flynn, Dokku and others, but they either did not meet our requirements or were explicitly marked as not ready for production. We were extremely impressed by Deis in particular and it's use of bleeding edge technologies like CoreOS, etcd and systemd. The biggest shortcoming we found with Deis is that it rebuilds Dockerfiles from scratch for each deploy (as far as I know).
 
 ## How does it work?
 
