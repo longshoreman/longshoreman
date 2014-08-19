@@ -58,21 +58,21 @@ To create an application cluster using Longshoreman, you'll need at least 2 serv
 ### 1. Launch a controller
 
 1. Launch an EC2 instance and log into the box.
-2. Install Docker with `sudo apt-get install docker.io`
-3. Start the controller with `sudo docker.io run -e REDIS_HOST=$REDIS_HOST_IP -e REDIS_PORT=6379 longshoreman/controller`
+2. Install Docker
+3. Start the controller with `sudo docker -d -p 80:80 run -e REDIS_HOST=$REDIS_HOST_IP -e REDIS_PORT=6379 longshoreman/controller`
 
 ### 2. Launch the router(s)
 
 1. Launch an EC2 instance and log into the box.
-1. Install Docker with `sudo apt-get install docker.io`
-1. Start the router with `sudo docker.io run -e REDIS_HOST=$REDIS_HOST_IP -e REDIS_PORT=6379 longshoreman/router`
+1. Install Docker
+1. Start the router with `sudo docker run -e -p 80:80 -d REDIS_HOST=$REDIS_HOST_IP -e REDIS_PORT=6379 longshoreman/router`
 1. Configure your load balancer (ELB, etc.) to direct traffic to the router instance(s).
 
 ### 3. Deploy container nodes
 
 1. Launch 1 or more EC2 instances.
-1. Install Docker with `sudo apt-get install docker.io`
-1. Edit the Docker config with `vi /etc/docker.io`
+1. Install Docker
+1. Edit the Docker config with `vi /etc/default/docker`
 1. Set `DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock"` to enable the Docker Remote API
 1. Restart Docker with `sudo service docker.io restart`
 1. Create an AMI if you'd like to speed up this step next time you launch a container node.
@@ -91,6 +91,3 @@ Check out [the CLI repository](https://github.com/longshoreman/cli) for full doc
 ## Using SSL
 
 We currently recommend using something like ELB where SSL termination happens on the load balancer. We will be adding support for SSL at the router level soon.
-
-
-
