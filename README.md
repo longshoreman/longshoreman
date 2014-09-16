@@ -45,7 +45,7 @@ companies (including Docker proper) that provide this service for a low cost. Yo
 
 #### Configuration Store
 
-We are currently using Redis to store and distribute the cluster's state. Longshoreman uses PubSub to notify Routers of updates to the internal application routing table. We're looking into support for etcd as a single point of failure exists if the Redis instance is not redundant.
+We are currently using Redis to store and distribute the cluster's state. Longshoreman uses PubSub to notify Routers of updates to the internal application routing table. We're looking into support for CouchBase as a single point of failure exists if the Redis instance is not redundant.
 
 ![Diagram](http://i.imgur.com/I0POpX4.png)
 
