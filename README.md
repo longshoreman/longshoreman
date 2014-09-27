@@ -1,93 +1,79 @@
-![Longshoreman](http://i.imgur.com/4vkVHdI.png)
+## Longshoreman Controller
 
-# Longshoreman
+The controller manages the application container cluster. It works with one
+or more routers to create a highly available and redundant cluster for Docker-based
+applications.
 
-Longshoreman automates application deployment using Docker. Just create a Docker repository (or use a service), configure the cluster using AWS or Digital Ocean (or whatever you like) and deploy applications using a Heroku-like CLI tool.
+The controller exposes a number of utility API endpoints that can be used to manage
+the cluster state using the CLI tool.
 
-[Main GitHub project page](https://github.com/longshoreman)
+### Lingo
 
-## Why make this?
+#### Hosts
+A host is a single node's IP. Multiple application instances can be deployed on a
+single host. When deploying a new application instance, hosts with the least utilization
+are selected for deployment. Hosts can be added or removed from the cluster at any time.
 
-We created Longshoreman because we love using Docker but were frustrated with the lack of production-ready deployment options that were available at the time. We looked closely at Deis, Flynn, Dokku and others, but they either did not meet our requirements or were explicitly marked as not ready for production. We were extremely impressed by Deis in particular and its use of bleeding edge technologies like CoreOS, etcd and systemd. The biggest shortcoming we found with Deis is that it rebuilds Dockerfiles from scratch for each deploy (as far as I know).
+#### Apps
+An App is represented by a domain name and a set of environmental variables. App
+instances are deployed to multiple hosts. Ports are dynamically assigned and propagated
+to the routers. Longshoreman applications must include an `EXPOSE 3000` port as the external to internal port mapping is currently not configurable. This will change shortly.
 
-## Who made it?
+#### Instances
+Application instances are deployed to hosts using the built in Docker Remote API.
 
-Longshoreman is sponsored/developed by [Wayfinder](http://wayfinder.co). We're currently using it in production to orchestrate the deployment of microservices (which it suits very nicely).
+#### Envs
+Each application can be configured using environmental variables. Variables can be set
+at any time and will trigger a restart.
 
-## How does it work?
+#### Router
+Traffic is routed to application components via the routers. Routers are applications
+which dynamically HTTP requests to the appropriate back-end instances. Routers are
+notified of updates to the routing table using Redis PubSub.
 
-Longshoremen has 3 core components: a Controller, one or more Routers and the CLI. It also uses a Docker registry and Redis as its configuration database.
+### Endpoints
 
-### Controller
+These endpoints are utilized by the CLI tool.
 
-The Longshoreman controller is a service which orchestrates the deployment of Docker applications across a cluster and controls how traffic (web or what have you) is routed to individual application instances. It communicates over HTTP with the CLI tool. Launching a new version of an application is as simple as `longshoreman --app my.app.com deploy docker.repo.com/image:tag`. Your application will be deployed to 2 or more nodes (depending on the size of your cluster and its available resources). Versioning and rollbacks can be achieved using image tags.
+#### `GET /apps`
+Load the currently configured applications.
 
-[Controller Repository](https://github.com/longshoreman/controller)
+#### `GET /hosts`
+Load the IPs of all hosts in the cluster.
 
-### Routers
+#### `POST /hosts`
+Add a new host to the cluster.
 
-Routers dynamically direct incoming web traffic to the correct application instances. They are simple Node.js reverse proxies that pass requests on to the underlying application instances. Multiple routers can be utilized to distribute traffic and eliminate single points of failure.
+#### `DELETE /hosts/:host`
+Remove a host from the cluster.
 
-[Router Repository](https://github.com/longshoreman/router)
+#### `POST /:app/deploy => '{"image": "docker/image"}'`
+Deploy an application to the cluster. Specify a Docker image name.
 
-### CLI
+#### `GET /:app/instances`
+Return all instances for an application.
 
-The command line tool is an interface to the Longshoreman controller service. It allows users to describe the state of the application cluster, deploy new instances of applications (with zero-downtime), add and remove hosts, add and remove application environmental variables and more. See the link below for full documentation.
+#### `GET /:app/envs`
+Get all environmental variables for an application.
 
-[CLI Repository](https://github.com/longshoreman/cli)
+#### `POST /:app/envs`
+Add a new environmental variables to an application.
 
-### Other Components
+#### `DELETE /:app/envs/:env`
+Remove an environmental variables from an application.
 
-#### Registry
+## Start a Controller
 
-Longshoreman uses a Docker registry (most likely private) to coordinate application versioning and deployment. Docker registries are outside of the scope of this project, so if you're unfamiliar with them please [read more here](https://github.com/dotcloud/docker-registry). You will need a Docker registry (most likely a private one) to use Longshoreman. There are several private registry hosting
-companies (including Docker proper) that provide this service for a low cost. You can also host a registry yourself (preferred). Setting up an S3-backed private registry is fairly simple. Just follow [these instructions](https://github.com/dotcloud/docker-registry).
+Just run `sudo docker.io run -e REDIS_HOST=$REDIS_HOST_IP -e REDIS_PORT=6379 longshoreman/controller` on your controller node(s) to start directing traffic to your Docker application instances. `$REDIS_HOST_IP` is the IP address of your Redis database.
 
-#### Configuration Store
+### TODO
 
-We are currently using Redis to store and distribute the cluster's state. Longshoreman uses PubSub to notify Routers of updates to the internal application routing table. We're looking into support for etcd as a single point of failure exists if the Redis instance is not redundant.
+* Better error handling for failed image downloads
 
-![Diagram](http://i.imgur.com/I0POpX4.png)
+* Storing revisions for application state will allow for simple rollback. However,
+rollbacks can still be achieved by deploying a specific Docker image tag.
 
-## Quick Start
+* Smarter handling of host removal and addition. The controller should redistribute
+application instances across the cluster based on available resources.
 
-This guide will walk you through creating a Longshoreman powered cluster (we're using EC2 running Ubuntu in this example).
-
-To create an application cluster using Longshoreman, you'll need at least 2 server nodes. However we recommend using 5 for enhanced robustness. Here's how they're broken down: 1 router, 1 controller, 2 application nodes and a Redis box (using a Redis hosting provider will work well too). In the 2 node set up the router, controller and Redis db can live on a single server (but that's not recommended). Actually, the whole thing can run on a single server if you're just taking a test drive, but I digress.
-
-### 1. Launch a controller
-
-1. Launch an EC2 instance and log into the box.
-2. Install Docker
-3. Start the controller with `sudo docker -d -p 80:80 run -e REDIS_HOST=$REDIS_HOST_IP -e REDIS_PORT=6379 longshoreman/controller`
-
-### 2. Launch the router(s)
-
-1. Launch an EC2 instance and log into the box.
-1. Install Docker
-1. Start the router with `sudo docker run -e -p 80:80 -d REDIS_HOST=$REDIS_HOST_IP -e REDIS_PORT=6379 longshoreman/router`
-1. Configure your load balancer (ELB, etc.) to direct traffic to the router instance(s).
-
-### 3. Deploy container nodes
-
-1. Launch 1 or more EC2 instances.
-1. Install Docker
-1. Edit the Docker config with `vi /etc/default/docker`
-1. Set `DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock"` to enable the Docker Remote API
-1. Restart Docker with `sudo service docker.io restart`
-1. Create an AMI if you'd like to speed up this step next time you launch a container node.
-
-### 4. Configure and deploy applications using the CLI
-
-1. Run `longshoreman init` to configure your credentials. Enter the Longshoreman controller domain and your token. The token is auto-generated and is stored in Redis (`GET token`).
-1. `longshoreman hosts:add <container-node-ip>` to make Longshoreman aware of your nodes.
-1. `longshoreman apps:add my.app.domain` to add a new service or application to your cluster.
-1. `longshoreman --app my.app.domain envs:set FOO=bar` to configure your application's runtime settings.
-1. `longshoreman --app my.app.domain deploy my.docker.reg/repo:tag` to deploy the first version of your application.
-1. Point your domain to your load balancer's CNAME and Bob's your uncle.
-
-Check out [the CLI repository](https://github.com/longshoreman/cli) for full documentation.
-
-## Using SSL
-
-We currently recommend using something like ELB where SSL termination happens on the load balancer. We will be adding support for SSL at the router level soon.
+* etcd support to eliminate single points of failure. Currently uses Redis.
