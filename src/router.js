@@ -4,6 +4,7 @@ var redis      = require('redis');
 var async      = require('async');
 var request    = require('request');
 var express    = require('express');
+var debug      = require('debug')('longshoreman');
 var url        = require('url');
 var http       = require('http');
 var prettyjson = require('prettyjson');
@@ -18,13 +19,13 @@ function createRedisClient() {
   var client = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST);
 
   client.on('error', function(err) {
-    console.log('Redis connection error. Aborting.');
-    console.log(err);
+    debug('Redis connection error. Aborting.');
+    debug(err);
     process.exit(1);
   });
 
   client.on('end', function() {
-    console.log('Redis connection closed. Aborting.');
+    debug('Redis connection closed. Aborting.');
     process.exit(1);
   });
 
@@ -50,7 +51,7 @@ function markHostHealth(app, host, healthy) {
   if (healthy) {
     delete UNHEALTHY[host];
   } else {
-    console.log(('[' + app + '] Could not reach ' + host).red);
+    debug('[' + app + '] Could not reach ' + host);
     UNHEALTHY[host] = 1;
   }
 }
@@ -107,11 +108,11 @@ function initRoutingTable(fn) {
       });
     }, function(err, results) {
       if (err) {
-        console.error(err);
+        debug(err);
         return fn(err);
       }
-      console.log("\nLoading routing table.");
-      console.log(prettyjson.render(INSTANCES) + "\n");
+      debug("\nLoading routing table.");
+      debug(prettyjson.render(INSTANCES) + "\n");
       fn(null, INSTANCES);
     });
   });
@@ -121,7 +122,7 @@ function selectAppInstance(app) {
   return _(INSTANCES[app]).difference(Object.keys(UNHEALTHY)).sample();
 }
 
-function proxy(req, res, hostname) {
+function proxy(req, res, app, hostname) {
   var parts = hostname.split(':');
 
   var options = {
@@ -135,6 +136,12 @@ function proxy(req, res, hostname) {
   var p = http.request(options, function(_res) {
     res.writeHead(_res.statusCode, _res.headers);
     _res.pipe(res, {end: true});
+  });
+
+  p.on('error', function(err) {
+    res.statusCode = 503;
+    res.end(err);
+    markHostHealth(app, hostname, false);
   });
 
   req.pipe(p, {end: true});
@@ -172,7 +179,7 @@ router.use(function(req, res, next) {
     return;
   }
 
-  proxy(req, res, randomInstance);
+  proxy(req, res, app, randomInstance);
 });
 
 initRoutingTable();
