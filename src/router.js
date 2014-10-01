@@ -122,8 +122,8 @@ function selectAppInstance(app) {
   return _(INSTANCES[app]).difference(Object.keys(UNHEALTHY)).sample();
 }
 
-function proxy(req, res, app, hostname) {
-  var parts = hostname.split(':');
+function proxy(req, res, app, instance) {
+  var parts = instance.split(':');
 
   var options = {
     hostname: parts[0],
@@ -141,7 +141,7 @@ function proxy(req, res, app, hostname) {
   p.on('error', function(err) {
     res.statusCode = 503;
     res.end(err);
-    markHostHealth(app, hostname, false);
+    markHostHealth(app, instance, false);
   });
 
   req.pipe(p, {end: true});
@@ -172,14 +172,14 @@ router.use(function(req, res, next) {
     return;
   }
 
-  var randomInstance = selectAppInstance(app);
+  var instance = selectAppInstance(app);
 
-  if (!randomInstance) {
+  if (!instance) {
     res.status(503).end('No available backend for ' + app);
     return;
   }
 
-  proxy(req, res, app, randomInstance);
+  proxy(req, res, app, instance);
 });
 
 initRoutingTable();
