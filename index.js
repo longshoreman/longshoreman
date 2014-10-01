@@ -14,8 +14,8 @@ var app = express();
 
 app.use(function(req, res, next) {
   var hostname = req.get('host').split(':')[0];
-  isControllerHost(hostname, function(err, isControllerHost) {
-    if (isControllerHost) {
+  isControllerHost(hostname, function(err, _isControllerHost) {
+    if (_isControllerHost) {
       controller(req, res, next);
     } else {
       router(req, res, next);
