@@ -1,6 +1,6 @@
 {
   "name": "docker-deploy",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Deploy Docker containers in the clouds",
   "main": "index.js",
   "scripts": {
