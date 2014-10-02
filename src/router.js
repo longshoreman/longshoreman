@@ -9,8 +9,8 @@ var url               = require('url');
 var http              = require('http');
 var prettyjson        = require('prettyjson');
 var _                 = require('lodash');
-var redisCmd          = require('./src/redis').redisCmd;
-var createRedisClient = require('./src/redis').createRedisClient;
+var redisCmd          = require('./redis').redisCmd;
+var createRedisClient = require('./redis').createRedisClient;
 
 var PORT      = process.env.PORT || 3000;
 var INSTANCES = {};
