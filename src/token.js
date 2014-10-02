@@ -1,5 +1,7 @@
+'use strict';
+
 var crypto   = require('crypto');
-var redisCmd = require('./redis');
+var redisCmd = require('./redis').redisCmd;
 
 function createToken(fn) {
   var token = crypto

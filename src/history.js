@@ -2,7 +2,7 @@
 
 var _        = require('lodash');
 var util     = require('./util');
-var redisCmd = require('./redis');
+var redisCmd = require('./redis').redisCmd;
 
 function saveDeployment(app, image, count, fn) {
   var hash = {

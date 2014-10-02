@@ -1,43 +1,21 @@
 'use strict';
 
-var redis      = require('redis');
-var async      = require('async');
-var request    = require('request');
-var express    = require('express');
-var debug      = require('debug')('longshoreman');
-var url        = require('url');
-var http       = require('http');
-var prettyjson = require('prettyjson');
-var _          = require('lodash');
+var redis             = require('redis');
+var async             = require('async');
+var request           = require('request');
+var express           = require('express');
+var debug             = require('debug')('longshoreman');
+var url               = require('url');
+var http              = require('http');
+var prettyjson        = require('prettyjson');
+var _                 = require('lodash');
+var redisCmd          = require('./src/redis').redisCmd;
+var createRedisClient = require('./src/redis').createRedisClient;
 
 var PORT      = process.env.PORT || 3000;
 var INSTANCES = {};
 var ENVS      = {};
 var UNHEALTHY = {};
-
-function createRedisClient() {
-  var client = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST);
-
-  client.on('error', function(err) {
-    debug('Redis connection error. Aborting.');
-    debug(err);
-    process.exit(1);
-  });
-
-  client.on('end', function() {
-    debug('Redis connection closed. Aborting.');
-    process.exit(1);
-  });
-
-  return client;
-}
-
-function redisCmd() {
-  var args = _.toArray(arguments);
-  var cmd = args.shift();
-  var client = createRedisClient();
-  client[cmd].apply(client, args);
-}
 
 function loadAppInstances(app, fn) {
   redisCmd('smembers', app + ':instances', fn);

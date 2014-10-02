@@ -2,7 +2,7 @@
 
 var _        = require('lodash');
 var async    = require('async');
-var redisCmd = require('./redis');
+var redisCmd = require('./redis').redisCmd;
 
 function loadAppEnvs(app, fn) {
   redisCmd('smembers', app + ':envs', fn);

@@ -1,6 +1,6 @@
 'use strict';
 
-var redisCmd = require('./redis');
+var redisCmd = require('./redis').redisCmd;
 
 function loadApps(fn) {
   redisCmd('smembers', 'apps', fn);

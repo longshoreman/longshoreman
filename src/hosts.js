@@ -2,7 +2,7 @@
 
 var request    = require('request');
 var _          = require('lodash');
-var redisCmd   = require('./redis');
+var redisCmd   = require('./redis').redisCmd;
 var containers = require('./containers');
 var util       = require('./util');
 
