@@ -4,7 +4,7 @@ var async      = require('async');
 var request    = require('request');
 var _          = require('lodash');
 var debug      = require('debug')('longshoreman');
-var redisCmd   = require('./redis');
+var redisCmd   = require('./redis').redisCmd;
 var notify     = require('./notify');
 var hosts      = require('./hosts');
 var history    = require('./history');
@@ -41,11 +41,13 @@ function healthCheckInstance(hostname, port, fn) {
       url: healthCheckUrl,
       timeout: 5000,
     }, function(err, res) {
-      if (err) {
-        fn(null, false);
-      } else {
-        fn(null, res.statusCode == 200);
+      var success = false;
+      if (!err) {
+        success = util.isResponseOk(res.statusCode);
       }
+      setTimeout(function() {
+        fn(err, success);
+      }, 500);
     });
   }, fn);
 }
@@ -69,7 +71,7 @@ function deployAppInstance(app, host, port, image, fn) {
       healthCheckInstance(host, port, fn);
     },
     function(success, fn) {
-      if (false && !success) {
+      if (!success) {
         fn(new Error('Failed to deploy new instance.'));
       } else {
         debug('Adding ' + host + ':' + port + ' to router');
@@ -78,8 +80,7 @@ function deployAppInstance(app, host, port, image, fn) {
     }
   ], function(err, result) {
     if (err) {
-      debug('Deploy failed. Rolling back.');
-      debug(err);
+      debug('Deploy failed (' + err.message + ')');
       killAppInstance(app, host, port, function(_err) {
         if (_err) {
           return fn(new Error('Rollback failed. System may be in an invalid state.'));
@@ -107,8 +108,6 @@ function allocateContainers(count, fn) {
     var hosts = _.keys(dist);
     var totalHosts = hosts.length;
     var idealCountPerHost = Math.ceil((totalContainers + count) / totalHosts);
-
-    debug(count, dist, totalContainers, totalHosts, idealCountPerHost);
 
     var allocated = {};
 

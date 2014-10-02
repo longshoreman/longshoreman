@@ -1,6 +1,6 @@
-var should = require('should');
+var should   = require('should');
 var apps     = require('../src/apps');
-var redisCmd = require('../src/redis');
+var redisCmd = require('../src/redis').redisCmd;
 
 describe('apps', function () {
 

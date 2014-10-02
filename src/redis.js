@@ -13,7 +13,7 @@ function createRedisClient() {
     process.exit(1);
   });
 
-  client.on('end', function() {
+  client.on('close', function() {
     debug('Redis connection closed. Aborting.');
     process.exit(1);
   });

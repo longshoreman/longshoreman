@@ -122,13 +122,15 @@ describe('instances', function() {
 
   describe('deployAppInstance', function() {
 
-    var containerId = null;
-
-    after(function(done) {
-      containers.deleteContainer(DOCKER_HOST, containerId, done);
-    });
 
     it('should deploy a new app instance', function(done) {
+
+      var containerId = null;
+
+      after(function(done) {
+        containers.deleteContainer(DOCKER_HOST, containerId, done);
+      });
+
       instances.deployAppInstance(APP_NAME, DOCKER_HOST, 3000, DOCKER_IMAGE, function(err) {
         should.not.exist(err);
         containers.loadContainers(DOCKER_HOST, function(err, _containers) {
@@ -137,6 +139,20 @@ describe('instances', function() {
           containerId = _containers[0].Id;
           done();
         });
+      });
+    });
+
+    it('should fail gracefully with invalid image', function(done) {
+      instances.deployAppInstance(APP_NAME, DOCKER_HOST, 3000, 'longshoreman/no-exist', function(err) {
+        should.exist(err);
+        done();
+      });
+    });
+
+    it('should fail gracefully with failed health check', function(done) {
+      instances.deployAppInstance(APP_NAME, DOCKER_HOST, 3000, 'longshoreman/fail', function(err) {
+        should.exist(err);
+        done();
       });
     });
 

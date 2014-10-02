@@ -1,6 +1,6 @@
 var should   = require('should');
 var envs     = require('../src/envs');
-var redisCmd = require('../src/redis');
+var redisCmd = require('../src/redis').redisCmd;
 
 var APP_NAME = 'test';
 

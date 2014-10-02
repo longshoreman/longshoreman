@@ -34,4 +34,13 @@ describe('util', function() {
     });
   });
 
+  describe('isResponseOk', function() {
+    it('should return true for ok response codes', function() {
+      util.isResponseOk(200).should.be.ok;
+    });
+    it('should return false for error response codes', function() {
+      util.isResponseOk(404).should.not.be.ok;
+    });
+  });
+
 });
