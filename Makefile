@@ -1,4 +1,4 @@
-version = $(npm version)
+version = $(shell cat package.json | jq -r '.version')
 image = longshoreman/longshoreman:$(version)
 
 all: build push

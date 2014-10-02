@@ -1,5 +1,5 @@
 {
-  "name": "docker-deploy",
+  "name": "longshoreman",
   "version": "0.9.1",
   "description": "Deploy Docker containers in the clouds",
   "main": "index.js",

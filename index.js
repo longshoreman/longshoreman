@@ -14,7 +14,11 @@ var PORT = process.env.PORT || 3000;
 var app = express();
 
 app.use(function(req, res, next) {
-  var hostname = req.get('host').split(':')[0];
+  var host = req.get('host');
+  if (!host) {
+    return res.status(400).send('No host header');
+  }
+  var hostname = host.split(':')[0];
   if (process.env.CONTROLLER_HOST == hostname) {
     controller(req, res, next);
   } else {
