@@ -2,6 +2,7 @@
 
 var http       = require('http');
 var express    = require('express');
+var debug      = require('debug')('longshoreman');
 var router     = require('./src/router');
 var controller = require('./src/controller');
 var redisCmd   = require('./src/redis');
@@ -14,8 +15,8 @@ var app = express();
 
 app.use(function(req, res, next) {
   var hostname = req.get('host').split(':')[0];
-  isControllerHost(hostname, function(err, _isControllerHost) {
-    if (_isControllerHost) {
+  isControllerHost(hostname, function(err, isController) {
+    if (isController) {
       controller(req, res, next);
     } else {
       router(req, res, next);
@@ -30,10 +31,10 @@ function isControllerHost(hostname, fn) {
 }
 
 app.listen(PORT, function() {
-  console.log('Listening on port ' + PORT);
+  debug('Listening on port ' + PORT);
 });
 
 process.on('uncaughtException', function(err) {
-  console.log('Caught exception: ' + err, err.stack);
+  debug('Caught exception: ' + err, err.stack);
   process.exit(1);
 });

@@ -5,7 +5,7 @@ var request    = require('request');
 var _          = require('lodash');
 var debug      = require('debug')('longshoreman');
 var redisCmd   = require('./redis');
-var routers    = require('./routers');
+var notify     = require('./notify');
 var hosts      = require('./hosts');
 var history    = require('./history');
 var envs       = require('./envs');
@@ -21,7 +21,7 @@ function addAppInstance(app, instance, fn) {
     if (err) {
       return fn(err);
     }
-    routers.notifyRouters(fn);
+    notify.notifyRouters(fn);
   });
 }
 
@@ -30,7 +30,7 @@ function removeAppInstance(app, instance, fn) {
     if (err) {
       return fn(err);
     }
-    routers.notifyRouters(fn);
+    notify.notifyRouters(fn);
   });
 }
 
@@ -208,7 +208,6 @@ exports.addAppInstance = addAppInstance;
 exports.removeAppInstance = removeAppInstance;
 exports.deployAppInstance = deployAppInstance;
 exports.deployNewAppInstances = deployNewAppInstances;
-exports.killAppInstance = killAppInstance;
 exports.deployAppInstances = deployAppInstances;
 exports.killAppInstance = killAppInstance;
 exports.killAppInstances = killAppInstances;

@@ -1,5 +1,5 @@
 version = $(shell cat package.json | jq -r '.version')
-image = longshorman/longshoreman:$(version)
+image = longshoreman/longshoreman:$(version)
 
 all: build push
 
