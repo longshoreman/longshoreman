@@ -54,10 +54,9 @@ To create an application cluster using Longshoreman, you'll need at least 1 serv
 
 1. Launch 1 or more EC2 instances.
 1. Install Docker (http://docs.docker.com/installation/)
-1. Edit the Docker config with `vi /etc/default/docker`
-1. Set `DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock"` to enable the Docker Remote API
+1. Edit the Docker config `/etc/default/docker`. Set `DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock"` to enable the Docker Remote API
 1. Restart Docker with `sudo service docker.io restart`
-1. Start the controller with `sudo docker -d -p 80:80 run -e REDIS_HOST=$REDIS_HOST -e REDIS_PORT=6379 -e CONTROLLER_HOST=$CONTROLLER_HOST longshoreman/longshoreman`
+1. Start the controller with `sudo docker run -d -p 80:80 -e REDIS_HOST=$REDIS_HOST -e REDIS_PORT=6379 -e CONTROLLER_HOST=$CONTROLLER_HOST longshoreman/longshoreman`
 
 Where `$REDIS_HOST` is set to your Redis hostname or IP and `$CONTROLLER_HOST` is your desired Longshoreman controller location (e.g., lsm.domain.com).
 
