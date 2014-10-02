@@ -113,7 +113,7 @@ function proxy(req, res, app, instance) {
 
   var p = http.request(options, function(_res) {
     res.writeHead(_res.statusCode, _res.headers);
-    _res.pipe(res, {end: true});
+    _res.pipe(res);
   });
 
   p.on('error', function(err) {
@@ -122,7 +122,7 @@ function proxy(req, res, app, instance) {
     markHostHealth(app, instance, false);
   });
 
-  req.pipe(p, {end: true});
+  req.pipe(p);
 }
 
 var router = express.Router();
