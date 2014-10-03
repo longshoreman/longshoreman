@@ -44,6 +44,7 @@ function healthCheckInstance(hostname, port, fn) {
       var success = false;
       if (!err) {
         success = util.isResponseOk(res.statusCode);
+        if (!success) err = new Error('Non-200 response code');
       }
       setTimeout(function() {
         fn(err, success);
