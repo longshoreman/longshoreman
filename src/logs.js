@@ -34,6 +34,10 @@ function loadAppLogs(app, fn) {
           if (err) {
             return fn(err);
           }
+          if (!container) {
+            debug('Could not load container at ' + host + ':' + port);
+            return fn(new Error('Failed to load container'));
+          }
           debug('Loading logs for ' + instance);
           loadContainerLogs(host, container.Id, fn);
         });
