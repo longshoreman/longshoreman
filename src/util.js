@@ -33,7 +33,16 @@ function isResponseOk(statusCode) {
   return statusCode >= 200 && statusCode <= 299;
 }
 
+function parseJSON(string) {
+  try {
+    return JSON.parse(string);
+  } catch (e) {
+    return false;
+  }
+}
+
 exports.getUnixTimestamp = getUnixTimestamp;
 exports.parseDockerImage = parseDockerImage;
 exports.getDockerUrl = getDockerUrl;
 exports.isResponseOk = isResponseOk;
+exports.parseJSON = parseJSON;

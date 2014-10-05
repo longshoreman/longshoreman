@@ -20,7 +20,7 @@ function loadDeployments(app, fn) {
       return fn(err);
     }
     var deployments = _.map(results, function(item) {
-      return JSON.parse(item);
+      return util.parseJSON(item);
     });
     fn(null, deployments);
   });
@@ -28,7 +28,7 @@ function loadDeployments(app, fn) {
 
 function loadMostRecentDeployment(app, fn) {
   redisCmd('lindex', 'deployments:' + app, 0, function(err, result) {
-    fn(err, result && JSON.parse(result));
+    fn(err, result && util.parseJSON(result));
   });
 }
 
