@@ -1,6 +1,6 @@
 {
   "name": "longshoreman",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "description": "Deploy Docker containers in the clouds",
   "main": "index.js",
   "scripts": {
