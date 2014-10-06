@@ -150,7 +150,12 @@ function deployNewAppInstances(app, image, count, fn) {
         });
       }, fn);
     }, function(err) {
-      fn(err, allocated);
+      if (err) {
+        debug('Failed to deploy one or more instances (' + err.message + ')');
+        fn(err);
+      } else {
+        fn(null, allocated);
+      }
     });
   });
 }
