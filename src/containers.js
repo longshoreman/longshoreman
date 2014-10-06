@@ -183,7 +183,7 @@ function stopContainerByPort(host, port, fn) {
       stopContainer(host, container.Id, fn);
     }
     else {
-      fn(null, '');
+      fn(null, null);
     }
   });
 }

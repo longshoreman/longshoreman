@@ -208,6 +208,13 @@ describe('containers', function () {
       });
     });
 
+    it('should error when container does not exist', function(done) {
+      containers.killContainer(DOCKER_HOST, 'foo', function(err) {
+        should.exist(err);
+        done();
+      });
+    });
+
   });
 
   describe('deleteContainer', function() {

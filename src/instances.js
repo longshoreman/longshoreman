@@ -46,11 +46,14 @@ function healthCheckInstance(hostname, port, fn) {
         success = util.isResponseOk(res.statusCode);
         if (!success) err = new Error('Non-200 response code');
       }
+      debug('Health check ' + (success ? 'passed' : 'failed'));
       setTimeout(function() {
         fn(err, success);
       }, 500);
     });
-  }, fn);
+  }, function(err, result) {
+    fn(null, result);
+  });
 }
 
 function deployAppInstance(app, host, port, image, fn) {
