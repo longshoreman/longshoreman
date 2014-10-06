@@ -177,21 +177,20 @@ function deployAppInstances(app, image, count, fn) {
     if (err) {
       return fn(err);
     }
-    if (instances.length) {
-      var cb = fn;
-      fn = function(err) {
-        if (err) {
-          fn(err);
-        } else {
-          history.saveDeployment(app, image, count, _.noop);
-          async.map(instances, function(instance, fn) {
-            var parts = instance.split(':');
-            killAppInstance(app, parts[0], parts[1], fn);
-          }, cb);
-        }
-      };
-    }
-    deployNewAppInstances(app, image, count, fn);
+    deployNewAppInstances(app, image, count, function(err) {
+      if (err) {
+        return fn(err);
+      }
+      debug('Deployment successful. Saving history record.');
+      history.saveDeployment(app, image, count, _.noop);
+      if (instances.length) {
+        debug('Tearing down ' + instances.length + ' containers.');
+        async.map(instances, function(instance, fn) {
+          var parts = instance.split(':');
+          killAppInstance(app, parts[0], parts[1], fn);
+        }, fn);
+      }
+    });
   });
 }
 

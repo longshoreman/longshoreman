@@ -182,4 +182,13 @@ describe('instances', function() {
 
   });
 
+  describe('deployAppInstances', function() {
+    it('should fail gracefully without crashing', function(done) {
+      instances.deployAppInstances(APP_NAME, 'longshoreman/no-exist', 2, function(err) {
+        should.exist(err);
+        done();
+      });
+    });
+  });
+
 });
