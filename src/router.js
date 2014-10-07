@@ -118,7 +118,7 @@ function proxy(req, res, app, instance) {
 
   p.on('error', function(err) {
     res.statusCode = 503;
-    res.end(err);
+    res.end(err.message);
     markHostHealth(app, instance, false);
   });
 
