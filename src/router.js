@@ -10,7 +10,7 @@ var http              = require('http');
 var prettyjson        = require('prettyjson');
 var _                 = require('lodash');
 var redisCmd          = require('./redis').redisCmd;
-var createRedisClient = require('./redis').createRedisClient;
+var getRedisClient    = require('./redis').getRedisClient;
 
 var PORT      = process.env.PORT || 3000;
 var INSTANCES = {};
@@ -35,7 +35,7 @@ function markHostHealth(app, host, healthy) {
 }
 
 function subscribeToUpdates() {
-  var client = createRedisClient();
+  var client = getRedisClient();
   client.on('message', function(channel, message) {
     if (channel == 'updates') {
       initRoutingTable();
