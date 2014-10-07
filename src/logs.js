@@ -14,6 +14,8 @@ function loadContainerLogs(host, containerId, fn) {
     qs: {
       stdout: 1,
       stderr: 1,
+      timestamps: 1,
+      tail: 200,
     }
   }, function(err, res, body) {
     fn(err, body);
