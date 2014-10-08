@@ -19,6 +19,8 @@ Longshoreman is sponsored/developed by [Wayfinder](http://wayfinder.co). We're c
 
 The Longshoreman service has 2 main components, a router and a controller, which live in the same application instance. It also uses a Docker registry and Redis as its configuration database.
 
+[How to setup a Longshoreman cluster in 10 minutes](http://mikejholly.com/create-your-own-heroku-in-10-minutes/)
+
 ### Controller
 
 The Longshoreman controller is a service which orchestrates the deployment of Docker applications across a cluster and controls how traffic (web or what have you) is routed to individual application instances. It communicates over HTTP with the CLI tool. Launching a new version of an application is as simple as `longshoreman --app my.app.com deploy docker.repo.com/image:tag`. Your application will be deployed to 2 or more nodes (depending on the size of your cluster and its available resources). Versioning and rollbacks can be achieved using image tags.

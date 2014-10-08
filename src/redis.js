@@ -6,22 +6,28 @@ var debug = require('debug')('longshoreman');
 
 var _client = null;
 
-function getRedisClient() {
-
-  if (_client) return _client;
-
-  _client = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST);
-
-  _client.on('error', function(err) {
+function createRedisClient() {
+  var client = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST);
+  
+  client.on('error', function(err) {
     debug('Redis connection error. Aborting.');
     debug(err);
     process.exit(1);
   });
 
-  _client.on('close', function() {
+  client.on('close', function() {
     debug('Redis connection closed. Aborting.');
     process.exit(1);
   });
+
+  return client;
+}
+
+function getRedisClient() {
+
+  if (_client) return _client;
+
+  _client = createRedisClient();
 
   return _client;
 }
@@ -35,3 +41,4 @@ function redisCmd() {
 
 exports.redisCmd = redisCmd;
 exports.getRedisClient = getRedisClient;
+exports.createRedisClient = createRedisClient;
