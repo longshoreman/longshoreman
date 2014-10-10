@@ -76,3 +76,7 @@ Check out [the CLI repository](https://github.com/longshoreman/cli) for full doc
 ## Using SSL
 
 We currently recommend using something like ELB where SSL termination happens on the load balancer.
+
+## License
+
+MIT
