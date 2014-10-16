@@ -77,6 +77,7 @@ function runContainer(host, port, image, envs, fn) {
     Volumes: {},
     VolumesFrom: '',
     ExposedPorts: {'3000/tcp': {}},
+    RestartPolicy: {Name: 'always'},
   };
 
   createAndStartContainer(host, port, createOptions, fn);
