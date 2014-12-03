@@ -6,6 +6,7 @@ var validator  = require('express-validator');
 var url        = require('url');
 var _          = require('lodash');
 var async      = require('async');
+var debug      = require('debug')('longshoreman');
 var token      = require('./token');
 var service    = require('./service');
 var apps       = require('./apps');
@@ -21,6 +22,11 @@ router.use(bodyParser.urlencoded({extended: true}));
 router.use(bodyParser.json());
 router.use(validator());
 router.use(authMiddleware);
+router.use(function(req, res, next) {
+  debug(req.originalUrl);
+  debug(req.body);
+  next();
+});
 
 function authMiddleware(req, res, next) {
   token.checkToken(req.headers['x-auth'], function(err, valid) {
