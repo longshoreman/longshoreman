@@ -101,9 +101,9 @@ function allocateContainers(count, fn) {
 
   containers.getContainerDistribution(function(err, dist) {
 
-    if (err) {
-      return fn(err);
-    }
+    if (err) return fn(err);
+
+    debug(dist);
 
     var totalContainers = _.reduce(dist, function(sum, count, key) {
       return sum + count;
