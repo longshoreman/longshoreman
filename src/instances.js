@@ -134,10 +134,12 @@ function allocateContainers(count, fn) {
 }
 
 function deployNewAppInstances(app, image, count, fn) {
+  debug('Allocating containers');
   allocateContainers(count, function(err, allocated) {
     if (err) {
       return fn(err);
     }
+    debug(allocated);
     var _hosts = Object.keys(allocated);
     async.each(_hosts, function(host, fn) {
       async.times(allocated[host], function(n, fn) {

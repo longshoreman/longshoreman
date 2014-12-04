@@ -9,4 +9,7 @@ build:
 push:
 	docker push $(image)
 
-.PHONY: build push all
+test:
+	mocha
+
+.PHONY: build push all test
