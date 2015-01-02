@@ -49,7 +49,7 @@ function healthCheckInstance(hostname, port, fn) {
       debug('Health check ' + (success ? 'passed' : 'failed'));
       setTimeout(function() {
         fn(err, success);
-      }, 500);
+      }, 2000);
     });
   }, function(err, result) {
     fn(null, result);
